@@ -31,111 +31,19 @@ def load_font_awesome():
 st.markdown(load_font_awesome(), unsafe_allow_html=True)
 
 # 【优化2】将CSS提取为缓存函数，避免每次重新解析
+# 【性能优化】大幅简化CSS，移除复杂光晕和模糊效果
 @st.cache_data
 def load_custom_css():
     return """
 <style>
-/* 图标基础样式 */
-.icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 0.4em;
-    font-size: 1.1em;
-}
-.icon-glow {
-    text-shadow: 0 0 10px rgba(0, 212, 255, 0.8), 0 0 20px rgba(0, 212, 255, 0.4);
-    color: #00d4ff;
-}
-.icon-primary { color: #00d4ff; text-shadow: 0 0 8px rgba(0, 212, 255, 0.6); }
-.icon-success { color: #00ff88; text-shadow: 0 0 8px rgba(0, 255, 136, 0.6); }
-.icon-warning { color: #ffaa00; text-shadow: 0 0 8px rgba(255, 170, 0, 0.6); }
-.icon-danger { color: #ff4444; text-shadow: 0 0 8px rgba(255, 68, 68, 0.6); }
-
-/* 全局重置 */
-* {
-    margin: 0;
-    padding: 0;
-}
-
-/* 毛玻璃风格背景 - 清晰彩色光晕 */
+/* 简化背景 - 移除复杂光晕效果 */
 .stApp {
     background: #0a0b1e !important;
     color: #e0e6ff !important;
-    position: relative !important;
-    min-height: 100vh !important;
-    overflow: hidden !important;
 }
 
-/* 页面背景 */
 body {
     background: #0a0b1e !important;
-}
-
-/* 左侧大粉橙色光晕 */
-.stApp::before {
-    content: "" !important;
-    position: fixed !important;
-    top: 20% !important;
-    left: -15% !important;
-    width: 500px !important;
-    height: 500px !important;
-    background: radial-gradient(circle, rgba(255, 140, 180, 0.6) 0%, rgba(255, 180, 150, 0.4) 40%, transparent 70%) !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
-    filter: blur(40px) !important;
-    border-radius: 50% !important;
-}
-
-/* 右下角大紫色光晕 */
-.stApp::after {
-    content: "" !important;
-    position: fixed !important;
-    bottom: -15% !important;
-    right: -10% !important;
-    width: 700px !important;
-    height: 700px !important;
-    background: radial-gradient(circle, rgba(138, 43, 226, 0.7) 0%, rgba(100, 50, 200, 0.5) 40%, transparent 70%) !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
-    filter: blur(50px) !important;
-    border-radius: 50% !important;
-}
-
-/* 右上角小蓝色光晕 */
-body::before {
-    content: "" !important;
-    position: fixed !important;
-    top: 10% !important;
-    right: 15% !important;
-    width: 200px !important;
-    height: 200px !important;
-    background: radial-gradient(circle, rgba(100, 200, 255, 0.5) 0%, rgba(100, 200, 255, 0.3) 50%, transparent 70%) !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
-    filter: blur(20px) !important;
-    border-radius: 50% !important;
-}
-
-/* 左下角小粉色光晕 */
-body::after {
-    content: "" !important;
-    position: fixed !important;
-    bottom: 15% !important;
-    left: 10% !important;
-    width: 150px !important;
-    height: 150px !important;
-    background: radial-gradient(circle, rgba(255, 150, 180, 0.4) 0%, rgba(255, 150, 180, 0.2) 50%, transparent 70%) !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
-    filter: blur(25px) !important;
-    border-radius: 50% !important;
-}
-
-/* 确保内容在光晕之上 */
-.stApp > div {
-    position: relative !important;
-    z-index: 1 !important;
 }
 
 /* 侧边栏 - 简化样式（无光影） */
@@ -224,188 +132,54 @@ p, span, label {
     color: #d0d8f0 !important;
 }
 
-/* 融球光效动画 */
-@keyframes blob-glow {
-    0%, 100% {
-        box-shadow: 0 0 20px rgba(255, 105, 180, 0.4), 0 0 40px rgba(138, 43, 226, 0.3), 0 0 60px rgba(0, 191, 255, 0.2), 0 8px 32px 0 rgba(138, 43, 226, 0.3);
-    }
-    33% {
-        box-shadow: 0 0 30px rgba(138, 43, 226, 0.5), 0 0 50px rgba(255, 105, 180, 0.3), 0 0 70px rgba(0, 191, 255, 0.2), 0 8px 32px 0 rgba(255, 105, 180, 0.4);
-    }
-    66% {
-        box-shadow: 0 0 25px rgba(0, 191, 255, 0.4), 0 0 45px rgba(138, 43, 226, 0.3), 0 0 65px rgba(255, 105, 180, 0.2), 0 8px 32px 0 rgba(0, 191, 255, 0.3);
-    }
-}
-
-/* 按钮 - 毛玻璃效果 + 融球光效 */
-.stButton > button, [data-testid="baseButton-primary"] {
-    background: rgba(138, 43, 226, 0.3) !important;
-    backdrop-filter: blur(10px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    border-radius: 12px !important;
+/* 简化按钮样式 - 移除复杂动画和阴影 */
+.stButton > button {
+    background: rgba(138, 43, 226, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px !important;
     color: #ffffff !important;
-    font-weight: 600 !important;
-    padding: 0.75rem 1.5rem !important;
+    padding: 0.6rem 1.2rem !important;
     font-size: 10pt !important;
-    box-shadow: 0 8px 32px 0 rgba(138, 43, 226, 0.3) !important;
-    transition: all 0.3s ease !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
-
-.stButton > button::before {
-    content: "" !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-radius: 50% !important;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%) !important;
-    transform: translate(-50%, -50%) !important;
-    transition: width 0.6s ease, height 0.6s ease !important;
+    transition: background 0.2s ease !important;
 }
 
 .stButton > button:hover {
-    background: rgba(138, 43, 226, 0.5) !important;
-    transform: translateY(-2px) !important;
-    animation: blob-glow 3s ease-in-out infinite !important;
+    background: rgba(138, 43, 226, 0.7) !important;
 }
 
-.stButton > button:hover::before {
-    width: 300px !important;
-    height: 300px !important;
-}
-
-.stButton > button:active {
-    transform: translateY(0px) scale(0.98) !important;
-}
-
-/* 输入框 - 高级光影毛玻璃效果 */
-input, textarea, select, .stSelectbox, .stTextInput {
-    border-radius: 12px !important;
-    border: 1.5px solid transparent !important;
-    background: linear-gradient(rgba(30, 35, 60, 0.5), rgba(30, 35, 60, 0.5)) padding-box,
-                linear-gradient(135deg, rgba(186, 85, 211, 0.6) 0%, rgba(138, 43, 226, 0.3) 25%, transparent 50%, rgba(255, 215, 0, 0.3) 75%, rgba(255, 193, 7, 0.6) 100%) border-box !important;
-    backdrop-filter: blur(15px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+/* 简化输入框样式 - 移除复杂渐变和阴影 */
+input, textarea, select {
+    background: rgba(30, 35, 60, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 6px !important;
     color: #e0e6ff !important;
-    padding: 0.6rem 0.8rem !important;
+    padding: 0.5rem !important;
     font-size: 10pt !important;
-    transition: all 0.3s ease !important;
-    box-shadow: -4px -4px 12px rgba(186, 85, 211, 0.3), 
-                4px 4px 12px rgba(255, 193, 7, 0.3),
-                inset -1px -1px 2px rgba(255, 255, 255, 0.1),
-                inset 1px 1px 2px rgba(255, 255, 255, 0.05),
-                0 8px 16px rgba(138, 43, 226, 0.15) !important;
-    position: relative !important;
 }
 
 input:focus, textarea:focus {
-    border: 1.5px solid transparent !important;
-    background: linear-gradient(rgba(30, 35, 60, 0.7), rgba(30, 35, 60, 0.7)) padding-box,
-                linear-gradient(135deg, rgba(255, 105, 180, 0.8) 0%, rgba(186, 85, 211, 0.5) 25%, rgba(138, 43, 226, 0.3) 50%, rgba(255, 215, 0, 0.5) 75%, rgba(255, 193, 7, 0.8) 100%) border-box !important;
+    border-color: rgba(138, 43, 226, 0.6) !important;
     outline: none !important;
-    box-shadow: -6px -6px 16px rgba(255, 105, 180, 0.4), 
-                6px 6px 16px rgba(255, 193, 7, 0.4),
-                inset -1px -1px 3px rgba(255, 255, 255, 0.15),
-                inset 1px 1px 3px rgba(255, 255, 255, 0.1),
-                0 12px 24px rgba(138, 43, 226, 0.25) !important;
 }
 
-/* 文件上传器 - 高级光影毛玻璃效果 */
-[data-testid="stFileUploader"] {
-    background: linear-gradient(rgba(30, 35, 60, 0.4), rgba(30, 35, 60, 0.4)) padding-box,
-                linear-gradient(135deg, rgba(186, 85, 211, 0.6) 0%, rgba(138, 43, 226, 0.3) 25%, transparent 50%, rgba(255, 215, 0, 0.3) 75%, rgba(255, 193, 7, 0.6) 100%) border-box !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-    border: 1.5px solid transparent !important;
-    border-radius: 16px !important;
-    padding: 1.5rem !important;
-    box-shadow: -5px -5px 15px rgba(186, 85, 211, 0.3), 
-                5px 5px 15px rgba(255, 193, 7, 0.3),
-                inset -2px -2px 4px rgba(255, 255, 255, 0.1),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.05),
-                0 10px 20px rgba(138, 43, 226, 0.2) !important;
-    transition: all 0.3s ease !important;
-}
-
-[data-testid="stFileUploader"]:hover {
-    border-color: rgba(255, 105, 180, 0.4) !important;
-    box-shadow: 0 8px 32px 0 rgba(255, 105, 180, 0.3) !important;
-}
-
-/* 文件上传器内部区域 */
-[data-testid="stFileUploader"] section {
-    border: 2px dashed rgba(255, 255, 255, 0.2) !important;
-    border-radius: 12px !important;
-    background: rgba(20, 25, 45, 0.3) !important;
-    backdrop-filter: blur(10px) !important;
-    padding: 2rem !important;
-}
-
-[data-testid="stFileUploader"] section:hover {
-    border-color: rgba(255, 105, 180, 0.4) !important;
-    background: rgba(20, 25, 45, 0.5) !important;
-}
-
-/* 文本区域 - 高级光影毛玻璃效果 */
-[data-testid="stTextArea"] {
-    background: linear-gradient(rgba(30, 35, 60, 0.4), rgba(30, 35, 60, 0.4)) padding-box,
-                linear-gradient(135deg, rgba(186, 85, 211, 0.6) 0%, rgba(138, 43, 226, 0.3) 25%, transparent 50%, rgba(255, 215, 0, 0.3) 75%, rgba(255, 193, 7, 0.6) 100%) border-box !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-    border: 1.5px solid transparent !important;
-    border-radius: 16px !important;
-    padding: 1rem !important;
-    box-shadow: -5px -5px 15px rgba(186, 85, 211, 0.3), 
-                5px 5px 15px rgba(255, 193, 7, 0.3),
-                inset -2px -2px 4px rgba(255, 255, 255, 0.1),
-                inset 2px 2px 4px rgba(255, 255, 255, 0.05),
-                0 10px 20px rgba(138, 43, 226, 0.2) !important;
-}
-
-[data-testid="stTextArea"]:focus-within {
-    background: linear-gradient(rgba(30, 35, 60, 0.6), rgba(30, 35, 60, 0.6)) padding-box,
-                linear-gradient(135deg, rgba(255, 105, 180, 0.8) 0%, rgba(186, 85, 211, 0.5) 25%, rgba(138, 43, 226, 0.3) 50%, rgba(255, 215, 0, 0.5) 75%, rgba(255, 193, 7, 0.8) 100%) border-box !important;
-    box-shadow: -6px -6px 18px rgba(255, 105, 180, 0.4), 
-                6px 6px 18px rgba(255, 193, 7, 0.4),
-                inset -2px -2px 5px rgba(255, 255, 255, 0.15),
-                inset 2px 2px 5px rgba(255, 255, 255, 0.1),
-                0 12px 24px rgba(138, 43, 226, 0.3) !important;
-}
-
-/* 表格 - 毛玻璃效果 */
+/* 简化表格样式 */
 .styled-table {
     border-collapse: collapse !important;
     width: 100% !important;
 }
 
 .styled-table th {
-    background: rgba(138, 43, 226, 0.3) !important;
-    backdrop-filter: blur(10px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    padding: 1rem !important;
-    font-weight: 600 !important;
-    background: linear-gradient(135deg, rgba(255, 105, 180, 0.3) 0%, rgba(138, 43, 226, 0.3) 100%) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-    text-align: left;
-    box-shadow: 0 4px 16px 0 rgba(138, 43, 226, 0.2) !important;
+    background: rgba(138, 43, 226, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    padding: 0.8rem !important;
+    color: #e0e6ff !important;
 }
 
 .styled-table td {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    padding: 0.8rem 1rem !important;
+    padding: 0.6rem !important;
     color: #d0d8f0 !important;
-    background: rgba(20, 25, 45, 0.3) !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-.styled-table tr:hover td {
-    background: rgba(138, 43, 226, 0.2) !important;
+    background: rgba(20, 25, 45, 0.4) !important;
 }
 
 /* 展开器标题 - 简化样式（无光影） */
@@ -503,32 +277,18 @@ input:focus, textarea:focus {
     border-radius: 6px !important;
 }
 
-/* 滚动条美化 */
+/* 简化滚动条 */
 ::-webkit-scrollbar {
-    width: 10px !important;
-    height: 10px !important;
+    width: 8px !important;
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(20, 25, 45, 0.3) !important;
-    border-radius: 10px !important;
+    background: rgba(20, 25, 45, 0.5) !important;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, rgba(255, 105, 180, 0.6) 0%, rgba(138, 43, 226, 0.6) 100%) !important;
-    border-radius: 10px !important;
-    backdrop-filter: blur(10px) !important;
-    box-shadow: 0 4px 16px 0 rgba(138, 43, 226, 0.3) !important;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, rgba(255, 105, 180, 0.8) 0%, rgba(138, 43, 226, 0.8) 100%) !important;
-    box-shadow: 0 4px 16px 0 rgba(255, 105, 180, 0.5) !important;
-}
-
-/* 单选/复选框 */
-[role="radio"], [role="checkbox"] {
-    accent-color: #ba55d3 !important;
+    background: rgba(138, 43, 226, 0.6) !important;
+    border-radius: 4px !important;
 }
 </style>
 """
@@ -913,67 +673,10 @@ def render_profile(res: dict):
 # =========================
 
 if not st.session_state['user']:
-    st.markdown("""
-        <style>
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-        .nexus-title {
-            text-align: center;
-            padding: 3rem 0;
-        }
-        .nexus-main {
-            font-size: 4rem;
-            font-weight: 800;
-            letter-spacing: 0.15em;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #ff69b4 0%, #ba55d3 50%, #00bfff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 20px rgba(255, 105, 180, 0.5), 0 0 40px rgba(186, 85, 211, 0.3), 0 5px 15px rgba(0, 0, 0, 0.3);
-            filter: drop-shadow(0 5px 15px rgba(138, 43, 226, 0.4));
-            transition: all 0.3s ease;
-            cursor: default;
-            display: inline-block;
-        }
-        .nexus-main:hover {
-            transform: translateY(-5px) scale(1.05);
-            filter: drop-shadow(0 10px 30px rgba(255, 105, 180, 0.6));
-            background: linear-gradient(135deg, #ff69b4 0%, #ba55d3 30%, #00bfff 60%, #ff69b4 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shimmer 2s linear infinite;
-        }
-        .nexus-subtitle {
-            font-size: 1.2rem;
-            font-weight: 300;
-            letter-spacing: 0.3em;
-            background: linear-gradient(90deg, #ff6b9d 0%, #c44569 15%, #ffa502 30%, #ffd32a 45%, #05c46b 60%, #0fbcf9 75%, #4834df 90%, #be2edd 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            opacity: 0.9;
-            filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
-        }
-        .nexus-powered {
-            font-size: 0.65rem !important;
-            font-weight: 400;
-            opacity: 0.35;
-            margin-top: 1rem;
-            color: #a0a8c0;
-            letter-spacing: 0.05em;
-        }
-        </style>
-        <div class="nexus-title">
-            <div class="nexus-main">NEXUS</div>
-            <p class="nexus-subtitle">TALENT INTELLIGENCE PLATFORM</p>
-            <p class="nexus-powered">Powered by SAILER V3.3 · AI-Driven Insights</p>
-        </div>
-    """, unsafe_allow_html=True)
+    # 【优化：简化登录页面，减少渲染时间】
+    st.title("🧠 NEXUS · TALENT INTELLIGENCE")
+    st.caption("AI-Driven Talent Intelligence Platform · Powered by SAILER V3.3")
+    st.divider()
     
     u = st.text_input("用户名")
     s = st.file_uploader("导入快照", type=["json"])
